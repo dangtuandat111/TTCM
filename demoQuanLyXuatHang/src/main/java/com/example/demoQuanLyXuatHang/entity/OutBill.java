@@ -28,6 +28,8 @@ public class OutBill {
     @OneToMany(mappedBy = "outBill",cascade = CascadeType.ALL)
     private List<DetailOutbill> detailOutbills = new ArrayList<>();
 
+
+
     public OutBill(int idBranch, String billStatus, int total) {
         this.idBranch = idBranch;
         this.billStatus = billStatus;
