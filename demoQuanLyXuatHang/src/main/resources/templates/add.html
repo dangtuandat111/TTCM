@@ -8,6 +8,7 @@
     <title>Title</title >
 </head>
 <body>
+
 <h1 style="text-align: center">Thêm Hóa Đơn</h1>
 <form method="post" th:action="@{/add}" th:object="${outbill}"  >
     <div class="form-group">
@@ -16,14 +17,58 @@
         <label >Thuộc Danh Sách Sản Phẩm </label>
         <input   class="form-control" type="text" name="idList" >
         <label >Số Lượng</label>
-        <input   class="form-control" th:field="*{total}">
+        <input   class="form-control" th:field="*{total}" type="text" name="total">
         <label >Mã Chi Nhánh</label>
-        <input   class="form-control" th:field="*{idBranch}" >
+        <input   class="form-control" th:field="*{idBranch}" type="text" name="idBranch">
         <label >Tình trạng đơn </label>
-        <input   class="form-control" th:field="*{billStatus}">
+        <input   class="form-control" th:field="*{billStatus}"type="text" name="billStatus">
         <button type="submit" class="btn btn-primary">Submit</button>
     </div>
-
 </form>
+
+<!--<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Open modal for @mdo</button>-->
+
+
+<!--<form>-->
+<!--    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <h5 class="modal-title" id="exampleModalLabel">Thêm Hóa Đơn Mới</h5>-->
+<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--                </div>-->
+<!--                <div class="modal-body">-->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="recipient-name" class="col-form-label">Giá Sản Phẩm:</label>-->
+<!--                        <input type="text" class="form-control" id="recipient-name">-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="message-text" class="col-form-label">Thuộc Danh Sách :</label>-->
+<!--                        <textarea class="form-control" ></textarea>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="message-text" class="col-form-label">Số Lượng :</label>-->
+<!--                        <textarea class="form-control" ></textarea>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="message-text" class="col-form-label">Mã Chi Nhánh :</label>-->
+<!--                        <textarea class="form-control" id="message-text"></textarea>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="message-text" class="col-form-label">Tình trạng đơn:</label>-->
+<!--                        <textarea class="form-control"></textarea>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="modal-footer">-->
+<!--                    <button type="button" class="btn btn-primary">Send message</button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</form>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"-->
+<!--        integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>-->
+
+
 </body>
 </html>

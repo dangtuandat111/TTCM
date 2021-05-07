@@ -9,9 +9,13 @@ public class DetailOutbill {
     private OutBill_ProductKey id ;
 
     @ManyToOne
-    @MapsId("idProduct")
-    @JoinColumn(name = "id_Product")
-    private Product product;
+    @MapsId("idListProduct")
+    @JoinColumn(name = "id_ListProduct")
+    private ListProduct listProduct;
+
+    public DetailOutbill(int amount) {
+        this.amount = amount;
+    }
 
     @ManyToOne
     @MapsId("idOutBill")
@@ -31,12 +35,12 @@ public class DetailOutbill {
         this.id = id;
     }
 
-    public Product getProduct() {
-        return product;
+    public ListProduct getProduct() {
+        return listProduct;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProduct(ListProduct listProduct) {
+        this.listProduct = listProduct;
     }
 
     public OutBill getOutBill() {

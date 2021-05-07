@@ -1,22 +1,25 @@
 package com.example.demoQuanLyXuatHang.entity;
 
+import lombok.EqualsAndHashCode;
+
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 
 @Embeddable
+@EqualsAndHashCode
 public class OutBill_ProductKey implements Serializable {
-    private int idProduct ;
+    private int idListProduct;
     private int idOutBill;
 
     public OutBill_ProductKey() {
     }
 
-    public int getIdProduct() {
-        return idProduct;
+    public int getIdListProduct() {
+        return idListProduct;
     }
 
-    public void setIdProduct(int idProduct) {
-        this.idProduct = idProduct;
+    public void setIdListProduct(int idProduct) {
+        this.idListProduct = idProduct;
     }
 
     public int getIdOutBill() {
@@ -27,8 +30,8 @@ public class OutBill_ProductKey implements Serializable {
         this.idOutBill = idOutBill;
     }
 
-    public OutBill_ProductKey(int idProduct, int idOutBill) {
-        this.idProduct = idProduct;
+    public OutBill_ProductKey(int idListProduct, int idOutBill) {
+        this.idListProduct = idListProduct;
         this.idOutBill = idOutBill;
     }
 }

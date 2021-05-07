@@ -1,9 +1,9 @@
 package com.example.demoQuanLyXuatHang.repository;
 
-import com.example.demoQuanLyXuatHang.entity.Product;
+import com.example.demoQuanLyXuatHang.entity.ListProduct;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product,Integer> {
+public interface ListProductRepository extends JpaRepository<ListProduct,Integer> {
 }

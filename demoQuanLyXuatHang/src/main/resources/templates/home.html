@@ -11,6 +11,7 @@
 <div class="container my-2">
     <h1 style="text-align: center">Danh Sách Hóa Đơn Xuất</h1>
     <a class="btn btn-success" th:href="@{/add}">Thêm Hóa Đơn</a>
+<!--    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo" th:action="@{/getId/{id}(id=${outbill.idOutBill})}">Update</button>-->
     <table class="table table-striped  table-responsive-md">
         <thead>
         <tr>
@@ -37,6 +38,7 @@
             <td th:text="${outbill.billStatus}"></td>
             <td th:text="${outbill.createTime}"></td>
             <td><a class="btn btn-info" th:href="@{/getId/{id}(id=${outbill.idOutBill})}">Update</a></td>
+<!--            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo" th:action="@{/getId/{id}(id=${outbill.idOutBill})}">Update</button></td>-->
             <td><a class="btn btn-info" th:href="@{/deleteOutBill/{id}(id=${outbill.idOutBill})}">Delete</a></td>
         </tr>
         </tbody>

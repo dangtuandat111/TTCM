@@ -1,12 +1,8 @@
 package com.example.demoQuanLyXuatHang;
 
-import com.example.demoQuanLyXuatHang.entity.DetailOutbill;
-import com.example.demoQuanLyXuatHang.entity.OutBill;
-import com.example.demoQuanLyXuatHang.entity.OutBill_ProductKey;
-import com.example.demoQuanLyXuatHang.entity.Product;
 import com.example.demoQuanLyXuatHang.repository.DetailOutBillRepository;
 import com.example.demoQuanLyXuatHang.repository.OutBillRepository;
-import com.example.demoQuanLyXuatHang.repository.ProductRepository;
+import com.example.demoQuanLyXuatHang.repository.ListProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -23,7 +19,7 @@ public class DemoQuanLyXuatHangApplication implements CommandLineRunner {
 	OutBillRepository outBillRepository;
 
 	@Autowired
-	ProductRepository productRepository;
+    ListProductRepository listProductRepository;
 
 	@Autowired
 	DetailOutBillRepository detaiOutBillRepository;

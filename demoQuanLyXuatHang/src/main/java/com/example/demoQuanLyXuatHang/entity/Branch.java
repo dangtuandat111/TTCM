@@ -5,14 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Branch {
+@Table
+public class BRANCH {
     @Id
     private int id ;
     private String branchName;
     private String branchLocation;
 
 
-    public Branch(String branchName, String branchLocation) {
+    public BRANCH(String branchName, String branchLocation) {
         this.branchName = branchName;
         this.branchLocation = branchLocation;
     }
@@ -43,6 +44,6 @@ public class Branch {
 
 
 
-    public Branch() {
+    public BRANCH() {
     }
 }
