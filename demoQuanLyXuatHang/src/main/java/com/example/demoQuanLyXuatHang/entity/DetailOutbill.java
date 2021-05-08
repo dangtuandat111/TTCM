@@ -1,9 +1,12 @@
 package com.example.demoQuanLyXuatHang.entity;
 
+import lombok.ToString;
+
 import javax.persistence.*;
 
 @Entity
 @Table
+@ToString
 public class DetailOutbill {
     @EmbeddedId
     private OutBill_ProductKey id ;

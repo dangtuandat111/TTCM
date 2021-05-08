@@ -1,5 +1,7 @@
 package com.example.demoQuanLyXuatHang.entity;
 
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name="List_Product")
+@ToString
 public class ListProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,10 +22,21 @@ public class ListProduct {
     private String imageProduct;
     private String unit ;
 
+    @Transient
+    private List<Integer> products= new ArrayList<>();
 
 
     @OneToMany(mappedBy = "listProduct",cascade = CascadeType.ALL)
     private List<DetailOutbill> detailOutbills = new ArrayList<>();
+
+
+    public List<Integer> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Integer> products) {
+        this.products = products;
+    }
 
     public ListProduct(String productName, int idCategory, String detail, String imageProduct, String unit) {
         this.productName = productName;

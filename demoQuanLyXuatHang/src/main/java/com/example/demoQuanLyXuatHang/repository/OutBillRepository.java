@@ -17,7 +17,7 @@ public interface OutBillRepository extends JpaRepository<OutBill,Integer> {
             " where o.id=d.outBill.id and o.idBranch=b.id and d.listProduct.id=l.id" )
     List<DisplayOutBill> findAllbyMe ();
 
-    @Query(value = "select o from OutBill o , ListProduct l , DetailOutbill d where o.id = d.outBill.id and d.listProduct.id= l.id" +
-            "and o.id = ?1 and l.id =?2",nativeQuery = true)
-    OutBill findOutBillByIdAndIdListProduct(int id1 , int id2);
+//    @Query(value = "select * from OutBill o , ListProduct l , DetailOutbill d where o.id = d.outBill.id and d.listProduct.id= l.id" +
+//            "and o.id = ?1 and l.id =?2",nativeQuery = true)
+//    List<OutBill> findOutBillByIdAndIdListProduct(int id1 , int id2);
 }

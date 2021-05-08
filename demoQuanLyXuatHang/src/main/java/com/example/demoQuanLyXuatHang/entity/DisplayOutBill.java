@@ -26,4 +26,15 @@ public class DisplayOutBill {
 
     public DisplayOutBill() {
     }
+
+    @Override
+    public String toString() {
+        return "DisplayOutBill{" +
+                "idOutBill=" + idOutBill +
+                ", idBranch=" + idBranch +
+                ", createTime=" + createTime +
+                ", total=" + total +
+                ", billStatus='" + billStatus + '\'' +
+                '}';
+    }
 }

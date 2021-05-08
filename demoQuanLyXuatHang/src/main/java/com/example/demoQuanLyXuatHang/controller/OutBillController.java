@@ -13,7 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.Date;
 import java.util.List;
 
-@Controller
+@RestController
 public class OutBillController {
 
     @Autowired
@@ -30,6 +30,10 @@ public class OutBillController {
     public List<DisplayOutBill> getHome(){
 //          return new ModelAndView("home","outbills",
 //                  outBillRepository.findAllbyMe());
+        List<DisplayOutBill> list = outBillRepository.findAllbyMe();
+        for(DisplayOutBill display : list){
+            System.out.println(display.toString());
+        }
         return outBillRepository.findAllbyMe();
     }
     @GetMapping("/add")
@@ -38,10 +42,13 @@ public class OutBillController {
      return "add";
     }
     @PostMapping("/add")
-    public String add(@RequestParam int amount , @RequestParam int idList, @RequestParam int total , @RequestParam int idBranch , @RequestParam String billStatus,
-                      @RequestParam String productName , @RequestParam int idCategory ,@RequestParam String detail,
-                      @RequestParam String imageProduct, @RequestParam String unit){
+    public String add(@RequestParam(defaultValue = "100") int amount ,  @RequestParam(defaultValue = "10") int total , @RequestParam int idBranch , @RequestParam(defaultValue = "process") String billStatus,
+                      @RequestParam(defaultValue = " ") String productName , @RequestParam(defaultValue = "1") int idCategory ,@RequestParam(defaultValue = " ") String detail,
+                      @RequestParam(defaultValue = " ") String imageProduct, @RequestParam(defaultValue = " ") String unit ,@RequestParam int[] idProducts){
         ListProduct listProduct = new ListProduct( productName,  idCategory,  detail,  imageProduct,  unit);
+        for (int i : idProducts){
+            listProduct.getProducts().add(i);
+        }
         OutBill outBill1 = new OutBill(idBranch,billStatus,total);
         DetailOutbill detailOutBill1 = new DetailOutbill(amount);
 		detailOutBill1.setOutBill(outBill1);
@@ -53,8 +60,8 @@ public class OutBillController {
 		listProductRepository.save(listProduct);
 		return "redirect:/getAllOutBill";
     }
-    @GetMapping("/getId/{id1}{id2}")//id1 outbill  // id2 listproduct (của DisplayOutBill)
-    public DisplayOutBill getOutBillById(@PathVariable(name = "id") int id1,@PathVariable(name = "id2") int id2 ){
+    @GetMapping("/getId")//id1 outbill  // id2 listproduct (của DisplayOutBill)
+    public DisplayOutBill getOutBillById(@RequestParam int id1,@RequestParam int id2 ){
         // return new ModelAndView("getid","outbill",outBillRepository.findById(id).orElse(null));
          List<DisplayOutBill> list = outBillRepository.findAllbyMe();
          for (DisplayOutBill display:list){
@@ -63,38 +70,43 @@ public class OutBillController {
          return null;
 
     }
-    @PostMapping("/update/{id1}{id2}") // id1 -outbill // id2-listProduct
-    public  String updateOutBill(@PathVariable(name = "id1") int id1 ,@PathVariable(name = "id2") int id2,
-   @RequestParam int amount , @RequestParam int idList, @ModelAttribute OutBill outBill, @RequestParam int total , @RequestParam int idBranch , @RequestParam String billStatus,
-                                 @RequestParam String productName , @RequestParam int idCategory ,@RequestParam String detail,
-                                 @RequestParam String imageProduct, @RequestParam String unit){
+    @PostMapping("/update") // id1 -outbill // id2-listProduct
+    public  String updateOutBill(@RequestParam int id1 , @RequestParam String billStatus){
+        OutBill o = outBillRepository.findById(id1).orElse(null);
+        o.setBillStatus(billStatus);
+        outBillRepository.save(o);
+
 //        OutBill o = outBillRepository.findById(id1).orElse(null);
 //        ListProduct listProduct = listProductRepository.findById(id2).orElse(null);
 //        DetailOutbill detailOutbill = detaiOutBillRepository.findById(new OutBill_ProductKey(id2,id1)).orElse(null);
 
-        OutBill o = outBillRepository.findOutBillByIdAndIdListProduct(id1,id2);
-        ListProduct listProduct = listProductRepository.findListProductByIdAndIdOutBill(id2,id1);
-        DetailOutbill detailOutbill = detaiOutBillRepository.findById(new OutBill_ProductKey(id2,id1)).orElse(null);
-
-        o.setIdBranch(idBranch);
-        o.setTotal(total);
-        o.setBillStatus(billStatus);
-        detailOutbill.setAmount(amount);
-        listProduct.setDetail(detail);
-        listProduct.setImageProduct(imageProduct);
-        listProduct.setProductName(productName);
-        listProduct.setIdCategory(idCategory);
-        listProduct.setUnit(unit);
-        outBillRepository.save(o);
-        detaiOutBillRepository.save(detailOutbill);
-        listProductRepository.save(listProduct);
+//        List<OutBill> o = outBillRepository.findOutBillByIdAndIdListProduct(id1,id2);
+//        ListProduct listProduct = listProductRepository.findListProductByIdAndIdOutBill(id2,id1);
+//        DetailOutbill detailOutbill = detaiOutBillRepository.findById(new OutBill_ProductKey(id2,id1)).orElse(null);
+//        for (OutBill outBill : o){
+//            System.out.println(outBill.toString());
+//        }
+//        System.out.println(listProduct.toString());
+//        System.out.println(detailOutbill.toString());
+//        o.setIdBranch(idBranch);
+//        o.setTotal(total);
+//        o.setBillStatus(billStatus);
+//        detailOutbill.setAmount(amount);
+//        listProduct.setDetail(detail);
+//        listProduct.setImageProduct(imageProduct);
+//        listProduct.setProductName(productName);
+//        listProduct.setIdCategory(idCategory);
+//        listProduct.setUnit(unit);
+//        outBillRepository.save(o);
+//        detaiOutBillRepository.save(detailOutbill);
+//        listProductRepository.save(listProduct);
 //        OutBill o = outBillRepository.findById(id).orElse(null);
 //        o.setBillStatus(outBill.getBillStatus());
 //        o.setCreateTime(new Date());
 //        o.setTotal(outBill.getTotal());
 //        o.setIdBranch(outBill.getIdBranch());
 //        outBillRepository.save(o);
-        return "redirect:/";
+        return "redirect:/getAllOutBill";
     }
     @GetMapping("/deleteOutBill/{id}") //id : outbill
     public String deleteOutBill(@PathVariable(name = "id") int id){

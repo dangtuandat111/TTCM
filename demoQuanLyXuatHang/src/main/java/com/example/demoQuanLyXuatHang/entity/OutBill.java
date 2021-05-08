@@ -1,5 +1,7 @@
 package com.example.demoQuanLyXuatHang.entity;
 
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Table
+@ToString
 public class OutBill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
