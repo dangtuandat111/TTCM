@@ -35,11 +35,11 @@ public class DetailOutbill {
         this.id = id;
     }
 
-    public ListProduct getProduct() {
+    public ListProduct getListProduct() {
         return listProduct;
     }
 
-    public void setProduct(ListProduct listProduct) {
+    public void setListProduct(ListProduct listProduct) {
         this.listProduct = listProduct;
     }
 

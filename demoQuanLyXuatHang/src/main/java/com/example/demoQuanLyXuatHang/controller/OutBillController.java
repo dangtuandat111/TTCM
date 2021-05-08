@@ -38,27 +38,27 @@ public class OutBillController {
      return "add";
     }
     @PostMapping("/add")
-    public String add(@RequestParam int amount , @RequestParam int idList, @ModelAttribute OutBill outBill, @RequestParam int total , @RequestParam int idBranch , @RequestParam String billStatus,
+    public String add(@RequestParam int amount , @RequestParam int idList, @RequestParam int total , @RequestParam int idBranch , @RequestParam String billStatus,
                       @RequestParam String productName , @RequestParam int idCategory ,@RequestParam String detail,
                       @RequestParam String imageProduct, @RequestParam String unit){
         ListProduct listProduct = new ListProduct( productName,  idCategory,  detail,  imageProduct,  unit);
         OutBill outBill1 = new OutBill(idBranch,billStatus,total);
         DetailOutbill detailOutBill1 = new DetailOutbill(amount);
 		detailOutBill1.setOutBill(outBill1);
-		detailOutBill1.setProduct(listProduct);
+		detailOutBill1.setListProduct(listProduct);
 		detailOutBill1.setId(new OutBill_ProductKey());
-		outBill.getDetailOutbills().add(detailOutBill1);
+		outBill1.getDetailOutbills().add(detailOutBill1);
 		outBillRepository.save(outBill1);
 		detaiOutBillRepository.save(detailOutBill1);
 		listProductRepository.save(listProduct);
-		return "redirect:/";
+		return "redirect:/getAllOutBill";
     }
-    @GetMapping("/getId/{id1}")//id outbill
-    public DisplayOutBill getOutBillById(@PathVariable(name = "id") int id1 ){
+    @GetMapping("/getId/{id1}{id2}")//id1 outbill  // id2 listproduct (của DisplayOutBill)
+    public DisplayOutBill getOutBillById(@PathVariable(name = "id") int id1,@PathVariable(name = "id2") int id2 ){
         // return new ModelAndView("getid","outbill",outBillRepository.findById(id).orElse(null));
          List<DisplayOutBill> list = outBillRepository.findAllbyMe();
          for (DisplayOutBill display:list){
-             if (display.idOutBill==id1) return display;
+             if (display.idOutBill==id1&&display.idListProduct==id2) return display;
          }
          return null;
 
@@ -68,8 +68,12 @@ public class OutBillController {
    @RequestParam int amount , @RequestParam int idList, @ModelAttribute OutBill outBill, @RequestParam int total , @RequestParam int idBranch , @RequestParam String billStatus,
                                  @RequestParam String productName , @RequestParam int idCategory ,@RequestParam String detail,
                                  @RequestParam String imageProduct, @RequestParam String unit){
-        OutBill o = outBillRepository.findById(id1).orElse(null);
-        ListProduct listProduct = listProductRepository.findById(id2).orElse(null);
+//        OutBill o = outBillRepository.findById(id1).orElse(null);
+//        ListProduct listProduct = listProductRepository.findById(id2).orElse(null);
+//        DetailOutbill detailOutbill = detaiOutBillRepository.findById(new OutBill_ProductKey(id2,id1)).orElse(null);
+
+        OutBill o = outBillRepository.findOutBillByIdAndIdListProduct(id1,id2);
+        ListProduct listProduct = listProductRepository.findListProductByIdAndIdOutBill(id2,id1);
         DetailOutbill detailOutbill = detaiOutBillRepository.findById(new OutBill_ProductKey(id2,id1)).orElse(null);
 
         o.setIdBranch(idBranch);

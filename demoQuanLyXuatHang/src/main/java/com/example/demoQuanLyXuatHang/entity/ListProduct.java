@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name="List_Product")
 public class ListProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +33,8 @@ public class ListProduct {
         expiry = new Date();
     }
 
+    public ListProduct() {
+    }
 
     public int getId() {
         return id;

@@ -1,5 +1,9 @@
 package com.example.demoQuanLyXuatHang;
 
+import com.example.demoQuanLyXuatHang.entity.DetailOutbill;
+import com.example.demoQuanLyXuatHang.entity.ListProduct;
+import com.example.demoQuanLyXuatHang.entity.OutBill;
+import com.example.demoQuanLyXuatHang.entity.OutBill_ProductKey;
 import com.example.demoQuanLyXuatHang.repository.DetailOutBillRepository;
 import com.example.demoQuanLyXuatHang.repository.OutBillRepository;
 import com.example.demoQuanLyXuatHang.repository.ListProductRepository;
@@ -15,29 +19,39 @@ public class DemoQuanLyXuatHangApplication implements CommandLineRunner {
 		SpringApplication.run(DemoQuanLyXuatHangApplication.class, args);
 	}
 
-	@Autowired
-	OutBillRepository outBillRepository;
-
-	@Autowired
-    ListProductRepository listProductRepository;
-
-	@Autowired
-	DetailOutBillRepository detaiOutBillRepository;
+//	@Autowired
+//	OutBillRepository outBillRepository;
+//
+//	@Autowired
+//    ListProductRepository listProductRepository;
+//
+//	@Autowired
+//	DetailOutBillRepository detaiOutBillRepository;
 	@Override
 	public void run(String... args) throws Exception {
-//		Product product1 = new Product(100000,1);
-//		Product product2 = new Product(75000,2);
+//		ListProduct listProduct1 = new ListProduct( "ca ngu dai duong",  1,  "hai san",  "D/image",  "ttt");
+//		ListProduct listProduct2 = new ListProduct( "Tom Hum",  1,  "hai san",  "D/image/haisan",  "aaa");
 //
 //		OutBill outBill1 = new OutBill(1,"ok",10);
 //		OutBill outBill2 = new OutBill(2,"finished",3);
 //
-//		DetailOutbill detailOutBill1 = new DetailOutbill();
-//		detailOutBill1.setOutBill(outBill1);
-//		detailOutBill1.setProduct(product1);
-//		detailOutBill1.setAmount(product1.getAmount());
+//		DetailOutbill detailOutBill1 = new DetailOutbill(100);
+//	detailOutBill1.setListProduct(listProduct1);
 //		detailOutBill1.setId(new OutBill_ProductKey());
-//		product1.getDetailOutbills().add(detailOutBill1);
+//	outBill1.getDetailOutbills().add(detailOutBill1);
 //
+//		DetailOutbill detailOutBill2 = new DetailOutbill(100);
+//	detailOutBill2.setOutBill(outBill2);
+//		detailOutBill2.setListProduct(listProduct1);
+//		detailOutBill2.setId(new OutBill_ProductKey());
+//	outBill2.getDetailOutbills().add(detailOutBill2);
+//
+//		DetailOutbill detailOutBill3 = new DetailOutbill(100);
+//		detailOutBill3.setOutBill(outBill2);
+//	detailOutBill3.setListProduct(listProduct2);
+//		detailOutBill3.setId(new OutBill_ProductKey());
+//		outBill2.getDetailOutbills().add(detailOutBill3);
+
 //		DetailOutbill detailOutBill2 = new DetailOutbill();
 //		detailOutBill2.setOutBill(outBill2);
 //		detailOutBill2.setProduct(product1);
@@ -55,8 +69,8 @@ public class DemoQuanLyXuatHangApplication implements CommandLineRunner {
 //		outBillRepository.save(outBill1);
 //		outBillRepository.save(outBill2);
 //
-//		productRepository.save(product1);
-//		productRepository.save(product2);
+//		listProductRepository.save(listProduct1);
+//		listProductRepository.save(listProduct2);
 //
 //		detaiOutBillRepository.save(detailOutBill1);
 //		detaiOutBillRepository.save(detailOutBill2);
