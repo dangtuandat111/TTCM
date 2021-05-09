@@ -11,28 +11,30 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@CrossOrigin(origins = "http://localhost:3000")
+@RestController
+@RequestMapping("api/")
 public class ProductController {
     @Autowired
     ProductRepository productRepository;
     @Autowired
     ListProductRepository listProductRepository;
-    @GetMapping("/getAllProduct")
+    @GetMapping("/products")
     @ResponseBody
     public List<DisplayProduct> getAllProduct (){
         return productRepository.findAllProduct();
     }
-    @PostMapping("/addProduct")
+    @PostMapping("/products")
     public String addProduct(@RequestParam(defaultValue = "stocking") String statusProduct, @RequestParam int amount , @RequestParam int idList ){
         Product product = new Product(amount,idList,statusProduct);
         productRepository.save(product);
         return "redirect:/getAllProduct";
 
     }
-    @PostMapping("/updateProduct")
-    public  String updateProduct(@RequestParam int idProduct,@RequestParam String nameProduct , @RequestParam String detail
+    @PostMapping("/products/{id}")
+    public  String updateProduct(@PathVariable(name = "id") int id,@RequestParam String nameProduct , @RequestParam String detail
             ,@RequestParam String imageProduct, @RequestParam String statusProduct){
-      Product product= productRepository.findById(idProduct).orElse(null);
+      Product product= productRepository.findById(id).orElse(null);
         ListProduct listProduct = listProductRepository.findById(product.getIdList()).orElse(null);
        product.setStatusProduct(statusProduct);
        listProduct.setProductName(nameProduct);
@@ -42,7 +44,7 @@ public class ProductController {
        listProductRepository.save(listProduct);
         return "redirect:/getAllProduct";
     }
-    @RequestMapping(value = "/deleteProduct/{id}")
+    @RequestMapping(value = "/products/{id}")
     public String deleteProduct (@PathVariable(name = "id") int id ){
         productRepository.deleteById(id);
         return "redirect:/getAllProduct";

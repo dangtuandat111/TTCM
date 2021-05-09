@@ -27,6 +27,8 @@ public class DetailOutbill {
 
     private int amount ;
 
+
+
     public DetailOutbill() {
     }
 

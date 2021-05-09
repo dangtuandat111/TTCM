@@ -5,15 +5,14 @@ import com.example.demoQuanLyXuatHang.repository.DetailOutBillRepository;
 import com.example.demoQuanLyXuatHang.repository.OutBillRepository;
 import com.example.demoQuanLyXuatHang.repository.ListProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Date;
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
+@RequestMapping("api/")
 public class OutBillController {
 
     @Autowired
@@ -25,23 +24,23 @@ public class OutBillController {
     @Autowired
     DetailOutBillRepository detaiOutBillRepository;
 
-    @GetMapping("/getAllOutBill")
+    @GetMapping("/outbills")
     @ResponseBody
-    public List<DisplayOutBill> getHome(){
+    public String getHome(){
 //          return new ModelAndView("home","outbills",
 //                  outBillRepository.findAllbyMe());
         List<DisplayOutBill> list = outBillRepository.findAllbyMe();
         for(DisplayOutBill display : list){
-            System.out.println(display.toString());
+            System.out.println(display);
         }
-        return outBillRepository.findAllbyMe();
+        return outBillRepository.findAllbyMe().toString();
     }
     @GetMapping("/add")
     public String addOutBill(Model model){
      model.addAttribute("outbill",new OutBill());
      return "add";
     }
-    @PostMapping("/add")
+    @PostMapping("/outbills")
     public String add(@RequestParam(defaultValue = "100") int amount ,  @RequestParam(defaultValue = "10") int total , @RequestParam int idBranch , @RequestParam(defaultValue = "process") String billStatus,
                       @RequestParam(defaultValue = " ") String productName , @RequestParam(defaultValue = "1") int idCategory ,@RequestParam(defaultValue = " ") String detail,
                       @RequestParam(defaultValue = " ") String imageProduct, @RequestParam(defaultValue = " ") String unit ,@RequestParam int[] idProducts){
@@ -60,7 +59,7 @@ public class OutBillController {
 		listProductRepository.save(listProduct);
 		return "redirect:/getAllOutBill";
     }
-    @GetMapping("/getId")//id1 outbill  // id2 listproduct (của DisplayOutBill)
+    @GetMapping("/outbills/{id}")//id1 outbill  // id2 listproduct (của DisplayOutBill)
     public DisplayOutBill getOutBillById(@RequestParam int id1,@RequestParam int id2 ){
         // return new ModelAndView("getid","outbill",outBillRepository.findById(id).orElse(null));
          List<DisplayOutBill> list = outBillRepository.findAllbyMe();
@@ -70,7 +69,7 @@ public class OutBillController {
          return null;
 
     }
-    @PostMapping("/update") // id1 -outbill // id2-listProduct
+    @PostMapping("/update/{id}") // id1 -outbill // id2-listProduct
     public  String updateOutBill(@RequestParam int id1 , @RequestParam String billStatus){
         OutBill o = outBillRepository.findById(id1).orElse(null);
         o.setBillStatus(billStatus);
