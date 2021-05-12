@@ -380,7 +380,7 @@ export default function Import_Products() {
   function handleCreate() {
     setIsLoading(true)
     console.log(receiveProduct);
-    // Local.create("outbill", receiveProduct, page = "import")
+    // Local.create("intbill", receiveProduct, page = "import")
     //   .then(() => {
     //     handleClose(true),
     //     setIsLoading(false)

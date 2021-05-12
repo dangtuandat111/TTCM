@@ -1,11 +1,12 @@
 import React, { useState, useRef, useCallback } from "react";
 import DataTable from "react-data-table-component";
 import EditableCell from "components/EditableCell/EditableCell";
-import ExpandableComponent from "components/ExpandableComponent/ExpandableComponent";
 import Filter from "components/Filter/Filter";
 import Export from "components/Export/Export";
 import { Add, Delete } from "components/CRUD/Index";
-import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal, Form, Spinner } from "react-bootstrap";
+import Local from "../services/local.service";
+import { useForm } from "react-hook-form";
 const customStyles = {
   rows: {
     style: {
@@ -47,39 +48,34 @@ const columns = [
   },
   {
     name: "ĐỊA CHỈ",
-    selector: "address",
+    selector: "location",
     editable: true,
   },
   {
     name: "SỐ ĐIỆN THOẠI",
     selector: "phoneNumber",
-    sortable: true,
+    editable: true,
+
+  },
+  {
+    name: "TRẠNG THÁI",
+    selector: "status",
+    editable: true,
 
   },
 ];
 
 export default function Import_Products() {
-  const [data, setData] = React.useState([
-    {
-      id: 1,
-      name: "Greed Hà Nội",
-      address: "260 Hai Bà Trưng",
-      phoneNumber: "0123466",
-    },
-    {
-      id: 2,
-      name: "Greed Sài Gòn",
-      address: "260 Quận 1",
-      phoneNumber: "0123466",
-    },
-  ]);
+  const [data, setData] = React.useState([]);
   const [filterText, setFilterText] = React.useState(""); // text in filter input
   const filteredItems = data.filter(
     (item) =>
       item.name && item.name.toLowerCase().includes(filterText.toLowerCase())
   ); // filter by name
-  const [innerData, setInnerData] = useState(filteredItems);
   const [editingId, setEditingId] = useState("");
+  const { register, errors, handleSubmit } = useForm();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isChange, setIsChange] = useState(false);
   let formData = useRef({}).current;
   const isEditing = (record) => record.id === editingId;
   const [resetPaginationToggle, setResetPaginationToggle] = React.useState(
@@ -89,6 +85,16 @@ export default function Import_Products() {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  React.useEffect(() => {
+    async function getData() {
+      const stores = await Local.getAll("/stores");
+      setData(stores.data)
+      setIsChange(false);
+    }
+    getData()
+  },[isChange]);
+
   const actionExport = React.useMemo(
     () => <Export onExport={() => downloadCSV(data)} />,
     []
@@ -122,18 +128,22 @@ export default function Import_Products() {
 
   const save = (item) => {
     const payload = { ...item, ...formData };
-    const tempData = [...innerData];
 
-    const index = tempData.findIndex((item) => editingId === item.id);
-    if (index > -1) {
-      const item = tempData[index];
-      tempData.splice(index, 1, {
-        ...item,
-        ...payload,
-      });
-      setEditingId("");
-      setInnerData(tempData);
+    const sendData = {
+      name: payload.name,
+      location: payload.location,
+      phoneNumber: payload.phoneNumber,
+      status: payload.status
     }
+     Local.update("/stores", payload.id, sendData)
+        .then(() => {
+          setIsChange(true);
+          setEditingId("");
+          alert("Updated Success");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
   };
 
   const mergedColumns = columns.map((col) => {
@@ -271,6 +281,25 @@ export default function Import_Products() {
     console.log(toggledClearRows);
   }
 
+  function handleCreate(data){
+    setIsLoading(true)
+    const sendData = {
+      name: data.name,
+      location: data.location,
+      phoneNumber: data.phoneNumber,
+      status: "new"
+    }
+    const page = "store"
+    Local.create("stores", sendData, page )
+      .then(() => {
+        handleClose(true),
+        setIsChange(true);
+        alert("Created Success");
+      })
+      .catch((err) => console.log(err));
+
+  }
+
   return (
     <>
       <DataTable
@@ -284,8 +313,6 @@ export default function Import_Products() {
         customStyles={customStyles}
         selectableRows
         clearSelectedRows={toggledClearRows}
-        expandableRows
-        expandableRowsComponent={<ExpandableComponent page={"import-products"}/>}
         pagination
         paginationResetDefaultPage={resetPaginationToggle} // optionally, a hook to reset pagination to page 1
         subHeader
@@ -299,31 +326,32 @@ export default function Import_Products() {
           <Modal.Title>Thêm nhà cơ sở</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
+          <Form id="add-store"  onSubmit={handleSubmit(handleCreate)}>
             <Form.Group controlId="formBasicEmail">
               <Form.Label>Tên cơ sở</Form.Label>
-              <Form.Control type="text" />
+              <Form.Control type="text" {...register("name")}/>
             </Form.Group>
             <Form.Group controlId="formBasicEmail">
               <Form.Label>Địa chỉ</Form.Label>
-              <Form.Control type="text" />
+              <Form.Control type="text" {...register("location")}/>
             </Form.Group>
             <Form.Group controlId="formBasicEmail">
               <Form.Label>Số điện thoại</Form.Label>
-              <Form.Control type="text" />
+              <Form.Control type="text" {...register("phoneNumber")}/>
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary btn-fill" onClick={handleClose}>
-            Close
+          <Button variant="danger btn-fill" onClick={handleClose}>
+            Đóng
           </Button>
           <Button
             variant="primary btn-fill"
             type="submit"
-            onClick={handleClose}
+            form="add-store"
           >
-            Save Changes
+             {isLoading ? <Spinner animation="border" role="status" size="sm"/> : ""}
+            Thêm
           </Button>
         </Modal.Footer>
       </Modal>

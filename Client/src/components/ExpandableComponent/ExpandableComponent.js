@@ -7,22 +7,10 @@ import moment from "moment";
 import Local from "../../services/local.service"
 const ExpandableComponent = ({ data, page }) => {
   const [expandableData, setExpandableData] = React.useState([]);
-  const temp_data = [{
-    id: 1,
-    id_bill: 1,
-    name: "Cá Hồi",
-    quantity: 1000,
-    cost: 10000,
-  }]
-  const temp_data1 = [{
-    id: 1,
-    id_product: 1,
-    cost: 10000,
-    quantity: 1000,
-    date: "2020-12-01",
-  }]
-  const [innerData, setInnerData] = useState(expandableData);
   const [editingId, setEditingId] = useState("");
+  const [resetPaginationToggle, setResetPaginationToggle] = React.useState(
+    false
+  ); // reset to page 1
   let formData = useRef({}).current;
   const isEditing = (record) => record.id === editingId;
   const [filter, setFilter] = useState("");
@@ -38,7 +26,7 @@ const ExpandableComponent = ({ data, page }) => {
     });
   const filterItemImportAndExport = expandableData.filter(
     (item) =>
-      item.name && item.name.toLowerCase().includes(filter.toLowerCase())
+      item.product && item.product.toLowerCase().includes(filter.toLowerCase())
   );
   const [columns, setColums] = React.useState([]);
   React.useEffect(() => {
@@ -53,17 +41,20 @@ const ExpandableComponent = ({ data, page }) => {
           name: "SỐ LƯỢNG",
           selector: "quantity",
           sortable: true,
-          editable: true,
         },
         {
           name: "GIÁ NHẬP",
           selector: "cost",
           sortable: true,
-          editable: true,
         },
         {
           name: "NGÀY HẾT HẠN",
-          selector: "date",
+          selector: "expriy_date",
+          sortable: true,
+        },
+        {
+          name: "TRẠNG THÁI",
+          selector: "status",
           sortable: true,
           editable: true,
         },
@@ -71,13 +62,8 @@ const ExpandableComponent = ({ data, page }) => {
     } else if (page === "importOrExport-products") {
       setColums([
         {
-          name: "ID",
-          selector: "id",
-          sortable: true,
-        },
-        {
           name: "SẢN PHẨM",
-          selector: "name",
+          selector: "product",
           sortable: true,
           editable: true,
         },
@@ -100,16 +86,23 @@ const ExpandableComponent = ({ data, page }) => {
   React.useEffect(() => {
     async function getData() {
       if(page == "products"){
-        const ab = temp_data1.filter(item => item.id_product == data.id)
-        setExpandableData(ab)
+        const product_details = await Local.getById("products", data.id)
+        setExpandableData(product_details.data)
       }
-      else {
-        const ab = temp_data.filter((item) => item.id_bill == data.id)
-        setExpandableData(ab)
+      else if(page == "importOrExport-products") {
+        const bill_details = await Local.getById("exports", data.id);
+        const tempData = bill_details.data.map(item => {
+          return {
+            product: item.product.name,
+            quantity: item.quantity,
+            cost: item.cost,
+          }
+        });
+        setExpandableData(tempData);
       }
     }
     getData()
-  }, [data])
+  }, [])
 
   const formOnChange = (event) => {
     const nam = event.target.name;
@@ -131,18 +124,8 @@ const ExpandableComponent = ({ data, page }) => {
 
   const save = (item) => {
     const payload = { ...item, ...formData};
-    const tempData = [...innerData];
-
-    const index = tempData.findIndex((item) => editingId === item.id);
-    if (index > -1) {
-      const item = tempData[index];
-      tempData.splice(index, 1, {
-        ...item,
-        ...payload,
-      });
-      setEditingId("");
-      setInnerData(tempData);
-    }
+ 
+    
   };
 
   const mergedColumns = columns.map((col) => {

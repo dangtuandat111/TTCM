@@ -68,49 +68,21 @@ const columns = [
       <img height="84px" width="56px" alt={row.name} src={row.image} />
     ),
   },
+  {
+    name: "MÔ TẢ",
+    selector: "description",
+    editable: true,
+  },
 ];
 
 export default function Products() {
-  const [data, setData] = React.useState([
-    {
-      id: 1,
-      name: "Cà ngừ",
-      category: "1",
-      status: "sold out",
-      image: "",
-    },
-    {
-      id: 1,
-      name: "Bò mỹ",
-      category: "2",
-      status: "sold out",
-      image: "",
-    },
-    {
-      id: 3,
-      name: "Cà voi",
-      category: "1",
-      status: "sold out",
-      image: "",
-    },
-  ]);
-  const [category, setCategory] = React.useState([
-    {
-      id: 1,
-      name: "Hải sản"
-    },
-    {
-      id: 2,
-      name: "Nông sản"
-    },
-  ]);
+  const [data, setData] = React.useState([]);
+  const [category, setCategory] = React.useState([]);
   const [filterText, setFilterText] = React.useState(""); // text in filter input
   const filteredItems = data.filter(
     (item) =>
       item.name && item.name.toLowerCase().includes(filterText.toLowerCase())
   ); // filter by name
-  const [currentCategory, setCurrentCategory] = React.useState("1");
-  const [productByCategory, setProductByCategory] = React.useState([]);
   const { register, errors, handleSubmit } = useForm();
   const [editingId, setEditingId] = useState("");
   let formData = useRef({}).current;
@@ -130,16 +102,24 @@ export default function Products() {
 
   React.useEffect(() => {
     async function getData() {
-      // const products = await Local.getAll("/products");
-      // const categories = await Local.getAll(/categories);
-      // setData(products);
-      // setCategory(categories);
-      // setCurrentCategory(categories[0].id);
+      const products = await Local.getAll("/products");
+      const categories = await Local.getAll("/categories");
+      const tempData = products.data.map((item) => {
+        return {
+          id: item.id,
+          name: item.name,
+          category: item.category.id,
+          status: item.status,
+          image: item.image,
+          description: item.description,
+        };
+      });
+      console.log(products);
+      setData(tempData);
+      setCategory(categories.data);
     }
-    getData()
-  }, []);
-
-
+    getData();
+  }, [isLoading]);
 
   const actionDelete = React.useMemo(
     () => <Delete onDelete={() => deleteOfSelected()} />,
@@ -168,13 +148,27 @@ export default function Products() {
   };
 
   const save = (item) => {
-    const payload = { ...item, ...formData };
+    const tempData = { ...item, ...formData };
     setEditingId("");
     const sendData = {
-      name: payload.name,
-      category_id: payload.category,
+      name: tempData.name,
+      category_id: tempData.category,
       status: "updated",
-    }
+      description: tempData.description,
+    };
+    console.log(tempData);
+    // const formData = new FormData();
+    // formData.append("sendData", JSON.stringify(sendData));
+    // formData.append("image", data.image[0]);
+    // Local.create("/products", formData, "products")
+    //   .then(() => {
+    //     setIsLoading(false);
+    //     handleClose(true);
+    //     alert("Created Success");
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
     // Local.update("/products", payload.id, sendData)
     //   .then(() => {
     //     alert("Updated Success");
@@ -345,18 +339,21 @@ export default function Products() {
     const sendData = {
       name: data.name,
       category_id: data.category,
-      status: "new"
-    }
-    // Local.create("/products", sendData, "products")
-    //   .then(() => {
-    //     setIsLoading(false)
-    //     handleClose(true)
-    //     alert("Created Success");
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
-    console.log(data);
+      status: "new",
+      description: data.description,
+    };
+    const formData = new FormData();
+    formData.append("sendData", JSON.stringify(sendData));
+    formData.append("image", data.image[0]);
+    Local.create("/products", formData, "products")
+      .then(() => {
+        setIsLoading(false);
+        handleClose(true);
+        alert("Created Success");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   return (
@@ -390,13 +387,10 @@ export default function Products() {
           <Modal.Body>
             <Form.Group>
               <Form.Label>Loại</Form.Label>
-              <Form.Control
-                as="select"
-                {...register("category")} 
-              >
+              <Form.Control as="select" {...register("category")}>
                 {category.map((item, index) => {
                   return (
-                    <option key={index}  value={item.id}>
+                    <option key={index} value={item.id}>
                       {item.name}
                     </option>
                   );
@@ -405,10 +399,18 @@ export default function Products() {
             </Form.Group>
             <Form.Group>
               <Form.Label>Sản phẩm</Form.Label>
-              <Form.Control type="text" {...register("name")}  />
+              <Form.Control type="text" {...register("name")} />
             </Form.Group>
             <Form.Group>
-              <Form.File label="Ảnh" name="image" {...register("image")} />
+              <Form.File label="Ảnh" {...register("image")} />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Mô tả</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                {...register("description")}
+              />
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
@@ -416,7 +418,12 @@ export default function Products() {
               Đóng
             </Button>
             <Button variant="info btn-fill" type="submit">
-              {isLoading ? <Spinner animation="border" role="status" size="sm"/> : ""}Thêm
+              {isLoading ? (
+                <Spinner animation="border" role="status" size="sm" />
+              ) : (
+                ""
+              )}
+              Thêm
             </Button>
           </Modal.Footer>
         </Form>

@@ -22,7 +22,7 @@ const EditableCell = ({ row, index, column, col, onChange, options, page }) => {
   }, []);
 
   function handleChange(event) {
-    setOptionValue(event.target.value)
+    setOptionValue(event.target.value);
   }
 
   if (column.optioning) {
@@ -33,8 +33,12 @@ const EditableCell = ({ row, index, column, col, onChange, options, page }) => {
         name={column.selector}
         disabled={column.editing ? false : true}
       >
-        {options.map((option) => {
-          return <option value={option.id}>{option.name}</option>;
+        {options.map((option, index) => {
+          return (
+            <option value={option.id} key={index}>
+              {option.name}
+            </option>
+          );
         })}
       </select>
     );
@@ -47,7 +51,7 @@ const EditableCell = ({ row, index, column, col, onChange, options, page }) => {
         name={column.selector}
         style={{ width: "100%" }}
         onChange={handleOnChange}
-        value={value}
+        value={column.type  ? "" : value}
       />
     );
   }

@@ -48,12 +48,12 @@ const columns = [
   },
   {
     name: "NGÀY XUẤT",
-    selector: "export_date",
+    selector: "created_date",
     sortable: true,
   },
   {
     name: "TỔNG HÓA ĐƠN",
-    selector: "total_cost",
+    selector: "total",
     sortable: true,
   },
   {
@@ -78,39 +78,19 @@ const columnsOfAdd = [
     selector: "quantity",
     editable: true,
   },
+  
 ];
 
 export default function Export_Products() {
-  const [data, setData] = React.useState([
-    {
-      id: 1,
-      store: "Hà Nôi 1",
-      export_date: "2020-12-01",
-      total_cost: "1000",
-      status: "shipped",
-    },
-    {
-      id: 2,
-      store: "Hà Nôi 2",
-      export_date: "2020-12-01",
-      total_cost: "10000",
-      status: "shipped",
-    },
-  ]);
+  const [data, setData] = React.useState([]);
   const [store, setStore] = React.useState([]);
-  const [products, setProducts] = React.useState([
-    {
-      id: 2,
-      name: "Cá ngừ",
-    },
-  ]);
+  const [products, setProducts] = React.useState([]);
   const [sendProduct, setSendProduct] = React.useState({});
   const [filterText, setFilterText] = React.useState(""); // text in filter input
   const filteredItems = data.filter(
     (item) =>
       item.store && item.store.toLowerCase().includes(filterText.toLowerCase())
   ); // filter by name
-  const [innerData, setInnerData] = useState(filteredItems);
   const [editingId, setEditingId] = useState("");
   let formData = useRef({}).current;
   const isEditing = (record) => record.id === editingId;
@@ -141,14 +121,25 @@ export default function Export_Products() {
 
   React.useEffect(() => {
     async function getData() {
-      const outBills = await Local.getAll("/outbill");
-      const stores = await Local.getAll("/branch");
+      const outBills = await Local.getAll("/exports");
+      const stores = await Local.getAll("/stores");
       const products = await Local.getAll("/products");
-      setData(outBills);
-      setStore(stores);
-      setProducts(products);
+      const tempData = outBills.data.map((item) => {
+        return {
+          id: item.id,
+          status: item.status,
+          total: item.total,
+          created_date: item.created_date,
+          store: item.store.name
+        };
+      });
+      setData(tempData);
+      setStore(stores.data);
+      setProducts(products.data);
+      console.log(outBills);
     }
-  });
+    getData()
+  },[isLoading]);
 
   /* Start edit row */
   const formOnChange = (event) => {
@@ -172,7 +163,7 @@ export default function Export_Products() {
   const save = (item) => {
     const payload = { ...item, ...formData };
     if (payload.name != null) {
-      const tempData = [...sendProduct.products];
+      const tempData = [...sendProduct.details];
 
       const index = tempData.findIndex((item) => editingId === item.id);
       if (index > -1) {
@@ -182,7 +173,7 @@ export default function Export_Products() {
           ...payload,
         });
         setEditingId("");
-        setSendProduct({ ...sendProduct, products: tempData });
+        setSendProduct({ ...sendProduct, details: tempData });
       }
     } else {
       console.log(payload);
@@ -408,7 +399,7 @@ export default function Export_Products() {
       };
     });
     setSendProduct({
-      products: choseProducts,
+      details: choseProducts,
       store: data.store,
     });
   }
@@ -420,14 +411,13 @@ export default function Export_Products() {
 
   function handleCreate() {
     setIsLoading(true)
-    console.log(sendProduct);
-    // Local.create("outbill", sendData)
-    //   .then(() => {
-    //     handleClose(true),
-    //     setIsLoading(false)
-    //     alert("File Updated Success");
-    //   })
-    //   .catch((err) => console.log(err));
+    Local.create("exports", sendProduct, "export" )
+      .then(() => {
+        setIsLoading(false)
+        handleClose(true),
+        alert("Created Success");
+      })
+      .catch((err) => console.log(err));
   }
 
   return (
@@ -467,31 +457,30 @@ export default function Export_Products() {
                 <Form.Control
                   as="select"
                   multiple
-                  name="products"
                   {...register("products")}
                 >
-                  <option value="2">1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
+                  {products.map((item, index) => {
+                    return(
+                      <option key={index} value={item.id}>{item.name}</option>
+                    )
+                  })}
                 </Form.Control>
               </Form.Group>
               <Form.Group>
                 <Form.Label>Cở sở</Form.Label>
-                <Form.Control as="select" name="store" {...register("store")}>
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
+                <Form.Control as="select" {...register("store")}>
+                {store.map((item, index) => {
+                    return(
+                      <option key={index} value={item.id}>{item.name}</option>
+                    )
+                  })}
                 </Form.Control>
               </Form.Group>
             </Form>
           ) : (
             <DataTable
               columns={createColumns(mergedColumnsOfAdd)}
-              data={sendProduct.products}
+              data={sendProduct.details}
             />
           )}
         </Modal.Body>
